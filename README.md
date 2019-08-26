@@ -11,10 +11,12 @@ allprojects {
     }
 }
 dependencies {
-    implementation 'com.android.support:support-v4:latestVersion'
+    implementation 'com.github.SerenadeHL:ApkInstaller:1.0.0'
 }
 ```
 ### 2. 安装Apk
 ```kotlin
 ApkInstaller.with(activity).install(apkFile)
 ```
+## 注意
+- 安装前开发者需自行判断、请求SD卡权限
