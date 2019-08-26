@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+          package="com.serenade.apkinstaller">
+
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+
+    <application
+            android:allowBackup="true"
+            android:supportsRtl="true"
+            tools:ignore="GoogleAppIndexingWarning">
+        <provider
+                android:name=".ApkInstallerProvider"
+                android:authorities="${applicationId}.fileProvider"
+                android:exported="false"
+                android:grantUriPermissions="true"
+                tools:replace="name,authorities,exported,grantUriPermissions">
+            <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/file_paths"
+                    tools:replace="name,resource"/>
+        </provider>
+    </application>
+</manifest>
