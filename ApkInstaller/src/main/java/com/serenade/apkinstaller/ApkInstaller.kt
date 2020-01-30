@@ -3,8 +3,8 @@ package com.serenade.apkinstaller
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.support.v4.app.FragmentActivity
-import android.support.v4.content.FileProvider
+import androidx.fragment.app.FragmentActivity
+import androidx.core.content.FileProvider
 import java.io.File
 
 /**
@@ -14,6 +14,7 @@ import java.io.File
  */
 class ApkInstaller private constructor(private val mActivity: FragmentActivity) {
     private var mFragment: InstallPermissionFragment? = null
+    private var mOnInstallPermissionReject: (() -> Unit)? = null
 
     private var mAuthority: String = "${mActivity.packageName}.fileProvider"
 
@@ -30,6 +31,14 @@ class ApkInstaller private constructor(private val mActivity: FragmentActivity) 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//只有8.0才初始化
             mFragment = getInstallPermissionFragment()
         }
+    }
+
+    /**
+     * 用户拒绝给予安装权限
+     */
+    fun onInstallPermissionReject(onInstallPermissionReject: () -> Unit): ApkInstaller {
+        mOnInstallPermissionReject = onInstallPermissionReject
+        return this
     }
 
     private fun getInstallPermissionFragment(): InstallPermissionFragment {
@@ -50,30 +59,30 @@ class ApkInstaller private constructor(private val mActivity: FragmentActivity) 
         return mActivity.supportFragmentManager?.findFragmentByTag(TAG) as? InstallPermissionFragment
     }
 
-    fun install(apk: String) {
-        install(File(apk))
+    fun install(apkPath: String) {
+        install(File(apkPath))
     }
 
-    fun install(apk: File) {
+    fun install(apkFile: File) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val installAllowed = mActivity.packageManager.canRequestPackageInstalls()
             if (installAllowed) {
-                installApkCompat(apk)
+                installApkCompat(apkFile)
             } else {
                 mFragment?.startActivityForResult(object : InstallPermissionCallback {
                     override fun onPermission(grantPermission: Boolean) {
                         if (grantPermission) {
                             //用户授权
-                            install(apk)
+                            installApkCompat(apkFile)
                         } else {
-                            //用户取消开启权限
-                            //TODO 回调
+                            //用户拒绝给予安装权限
+                            mOnInstallPermissionReject?.invoke()
                         }
                     }
                 })
             }
         } else {
-            installApkCompat(apk)
+            installApkCompat(apkFile)
         }
     }
 

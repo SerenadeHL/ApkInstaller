@@ -3,10 +3,11 @@ package com.serenade.apkinstaller
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.support.v4.app.Fragment
-
+import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 
 /**
  * 作者：Serenade
@@ -28,6 +29,7 @@ class InstallPermissionFragment : Fragment() {
         retainInstance = true
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun startActivityForResult(callback: InstallPermissionCallback) {
         mInstallPermissionCallback = callback
         val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:${activity?.packageName}"))
