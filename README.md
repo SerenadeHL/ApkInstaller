@@ -11,7 +11,7 @@ allprojects {
     }
 }
 dependencies {
-    implementation 'com.github.SerenadeHL:ApkInstaller:1.0.0'
+    implementation 'com.github.SerenadeHL:ApkInstaller:1.0.1'
 }
 ```
 ### 2. 安装Apk
